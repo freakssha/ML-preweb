@@ -1,14 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
 .container {
   min-height: 100vh;
   padding: 0 0.5rem;
@@ -65,7 +54,21 @@
 .title {
   margin: 0;
   line-height: 1.15;
-  font-size: 2.7rem;
+  font-size: 1.8rem;
+  margin-bottom: 17px;
+}
+
+.title_links {
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 13px;
+  margin-bottom: -16px;
+}
+
+.title_links a {
+  font-size: 1.5rem;
+  line-height: 0.5;
 }
 
 .title,
@@ -84,8 +87,7 @@
   border-radius: 5px;
   padding: 0.75rem;
   font-size: 1.1rem;
-  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
-    Bitstream Vera Sans Mono, Courier New, monospace;
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
 }
 
 .grid {
@@ -105,8 +107,6 @@
   text-align: left;
   color: inherit;
   text-decoration: none;
-
-
   position: relative;
   border-radius: 25px;
   background: rgba(255, 255, 255, 0.2);
@@ -138,50 +138,37 @@
   height: 1em;
 }
 
-
-
-
-
-
-
-
-
-
-
 .glass {
   position: relative;
-  box-shadow: 20px 20px 40px -6px rgba(0,0,0,0.4);
+  box-shadow: 40px 40px 80px -6px rgba(0, 0, 0, 0.6);
   transition: all 0.2s ease-in-out;
-
-  border-radius: 25px;
+  border-radius: 20px;
   background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(30px);
+  backdrop-filter: blur(10px);
   border: 2px solid rgba(0, 0, 0, 0.6);
-
-width: 100%;
-
+  width: 100%;
 }
-
-
-
-
 
 @media (max-width: 600px) {
   .main {
     padding: 5rem 1rem 5rem 1rem;
   }
+
   .grid {
     width: 100%;
     flex-direction: column;
   }
+
   .description {
     line-height: 1.2;
     font-size: 1.2rem;
     margin-bottom: 30px;
   }
+
   .title {
     font-size: 2.1rem;
     margin-top: -55px;
   }
-
 }
+
+/*# sourceMappingURL=Home.module.css.map */

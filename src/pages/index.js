@@ -1,9 +1,7 @@
-import Head from 'next/head'
 import styles from '../styles/Home.module.scss'
 import React, {useEffect, useState} from 'react'
 
-import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
-import 'filepond/dist/filepond.min.css';
+
 import {Footer} from "../components/footer";
 import {
     StepContent1,
@@ -63,24 +61,28 @@ function getStepContent(step) {
 export default function Home() {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
-    const [isSubmitting, setSubmitting] = React.useState(0);
     const steps = getSteps();
+    const [isSubmitting, setSubmitting] = useState(false )
+
 
     useEffect(() => {
         if (isSubmitting) {
-            postUserData();
+            postUserML();
         }
-
-        setSubmitting(0)
+        setSubmitting(false)
     }, )
 
-    async function postUserData() {
+    async function postUserML() {
+        console.log(userData)
         axios({
             method: 'post',
-            url: 'http://localhost:3000/api',
-            data: userData,
+            url: '/api/parameters',
+            contentType: 'application/json',
+            data: userData
         })
-            .then(res => console.log(res.data));
+            .then(res => {
+                console.log(res)
+            })
     }
 
 
@@ -89,7 +91,7 @@ export default function Home() {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
         if (activeStep == 2) {
-            setSubmitting(1)
+            setSubmitting(true)
         }
     };
 
@@ -104,17 +106,13 @@ export default function Home() {
 
     return (
         <div className={styles.container}>
-            <Head>
-                <title>ML-preweb | подготовка машинного обучения к внедрению в веб-сервисы</title>
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
 
             <main className={styles.main}>
                 <Header/>
 
 
                 <div style={{width:'100%'}} className={styles.glass}>
-                    <Stepper activeStep={activeStep} orientation="vertical" style={{backgroundColor: 'rgba(0, 0, 0, 0.5)', borderRadius: 25}}>
+                    <Stepper activeStep={activeStep} orientation="vertical" style={{backgroundColor: 'rgba(0, 0, 0, 0.6)', borderRadius: 15}}>
 
                         {steps.map((label, index) => (
                             <Step key={label} >
@@ -157,7 +155,9 @@ export default function Home() {
 
 
             </main>
-            <Footer/>
+
+
+
         </div>
     )
 }

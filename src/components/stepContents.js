@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import { FilePond, registerPlugin } from 'react-filepond';
+import 'filepond/dist/filepond.min.css';
 import Button from "@material-ui/core/Button";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -7,9 +8,11 @@ import Select from "@material-ui/core/Select";
 import withStyles from "@material-ui/core/styles/withStyles";
 import InputBase from "@material-ui/core/InputBase";
 import {Typography} from "@material-ui/core";
+import axios from "axios";
 registerPlugin();
 
-export const userData = {file: null, parameters: null, funcName: null, argName: null}
+
+export const userData = {user_parameters: null, user_func_name: null, user_arg_name: null}
 
 export const stepTitles = [<Typography style={{color: 'white'}}>Upload the file</Typography>,
                            <Typography style={{color: 'white'}}>Select the input data parameters</Typography>,
@@ -18,21 +21,25 @@ export const stepTitles = [<Typography style={{color: 'white'}}>Upload the file<
 
 
 export const StepContent1 = () => {
-    const [file, setFile] = useState(null)
-
-    if (file !== null) {
-        userData.file = file
-    }
+    const [file, setFile] = useState()
 
     return (
         <div style={{marginTop: 10}}>
             <FilePond
+                name="file"
+                required={true}
+                allowMultiple={false}
+                maxFiles={1}
+                allowFileTypeValidation={true}
+                acceptedFileTypes={['text/python']}
                 files={file}
-                allowMultiple={true}
                 onupdatefiles={setFile}
                 className='filepond'
                 labelIdle='Drag & Drop your model in .py or <span class="filepond--label-action">Browse</span>'
                 style={{width: '100%'}}
+                fileValidateTypeLabelExpectedTypesMap={{ 'text/python': '.py' }}
+                fileValidateTypeLabelExpectedTypes='.py ONLY!'
+                server={{ url:'./api/uploads', revert:'/revert'}}
             />
         </div>
     )
@@ -65,6 +72,8 @@ export const StepContent2 = () => {
         const list = [...exampleValue]
         list[i][name] = value
         setExampleValue(list)
+
+        userData.user_parameters = list
     };
 
 
@@ -78,18 +87,21 @@ export const StepContent2 = () => {
             <Button
                 color="primary"
                 onClick={addInput}
+                style={{color: '#C8F751'}}
             >
                 Add
             </Button>
             <Button
                 color="primary"
                 onClick={deleteInput}
+                style={{color: '#C8F751'}}
             >
                 Delete
             </Button>
             <Button
                 color="primary"
                 onClick={checkData}
+                style={{color: '#C8F751'}}
             >
                 Сheck for correctness
             </Button>
@@ -150,13 +162,13 @@ export const StepContent3 = () => {
 
 
     const handleChangeFuncName = (event) => {
-        setFuncName(event.target.date)
-        userData.funcName = funcName
+        setFuncName(event.target.value)
+        userData.user_func_name = funcName
     };
 
     const handleChangeArgName = (event) => {
-        setArgName(event.target.date)
-        userData.argName = argName
+        setArgName(event.target.value)
+        userData.user_arg_name = argName
     };
 
     return (
@@ -235,7 +247,7 @@ const BootstrapInput = withStyles((theme) => ({
         ].join(','),
         '&:focus': {
             borderRadius: 4,
-            borderColor: '#80bdff',
+            borderColor: '#C8F751',
             background: 'white',
             boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
         },
