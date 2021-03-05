@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { FilePond, registerPlugin } from 'react-filepond';
 import 'filepond/dist/filepond.min.css';
 import Button from "@material-ui/core/Button";
@@ -9,6 +9,13 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import InputBase from "@material-ui/core/InputBase";
 import {Typography} from "@material-ui/core";
 import axios from "axios";
+import styles from "../styles/Home.module.scss";
+import Stepper from "@material-ui/core/Stepper";
+import Step from "@material-ui/core/Step";
+import StepLabel from "@material-ui/core/StepLabel";
+import StepContent from "@material-ui/core/StepContent";
+import Paper from "@material-ui/core/Paper";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 registerPlugin();
 
 
@@ -87,21 +94,21 @@ export const StepContent2 = () => {
             <Button
                 color="primary"
                 onClick={addInput}
-                style={{color: '#C8F751'}}
+                style={{color: 'blue'}}
             >
                 Add
             </Button>
             <Button
                 color="primary"
                 onClick={deleteInput}
-                style={{color: '#C8F751'}}
+                style={{color: 'blue'}}
             >
                 Delete
             </Button>
             <Button
                 color="primary"
                 onClick={checkData}
-                style={{color: '#C8F751'}}
+                style={{color: 'blue'}}
             >
                 Сheck for correctness
             </Button>
@@ -149,13 +156,6 @@ export const StepContent2 = () => {
 
 
 
-
-
-
-
-
-
-
 export const StepContent3 = () => {
     const [funcName, setFuncName] = React.useState('is_user_alive');
     const [argName, setArgName] = React.useState('user_data');
@@ -193,9 +193,6 @@ export const StepContent3 = () => {
 
 
 
-
-
-
 export const StepContent4 = () => {
     const [files, setFiles] = useState([])
 
@@ -213,6 +210,151 @@ export const StepContent4 = () => {
         </div>
     )
 }
+
+
+
+
+
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        width: '100%',
+    },
+    button: {
+        marginTop: theme.spacing(1),
+        marginRight: theme.spacing(1),
+    },
+    actionsContainer: {
+        marginBottom: theme.spacing(2),
+    },
+    resetContainer: {
+        padding: theme.spacing(3),
+    },
+}));
+
+
+
+
+function getSteps() {
+    return stepTitles;
+}
+
+function getStepContent(step) {
+    switch (step) {
+        case 0:
+            return <StepContent1/>;
+        case 1:
+            return <StepContent2/>;
+        case 2:
+            return <StepContent3/>;
+        default:
+            return <StepContent4/>;
+    }
+}
+
+export const Tool = () => {
+    const classes = useStyles();
+    const [activeStep, setActiveStep] = React.useState(0);
+    const steps = getSteps();
+    const [isSubmitting, setSubmitting] = useState(false )
+
+
+    useEffect(() => {
+        if (isSubmitting) {
+            postUserML();
+        }
+        setSubmitting(false)
+    }, )
+
+    async function postUserML() {
+        console.log(userData)
+        axios({
+            method: 'post',
+            url: '/api/parameters',
+            contentType: 'application/json',
+            data: userData
+        })
+            .then(res => {
+                console.log(res)
+            })
+    }
+
+
+
+    const handleNext = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
+        if (activeStep == 2) {
+            setSubmitting(true)
+        }
+    };
+
+    const handleBack = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    };
+
+    const handleReset = () => {
+        setActiveStep(0);
+        console.log(userData)
+    };
+
+    return (
+        <div style={{width:'100%'}} >
+            <div style={{width:'100%', marginBottom: 11}} className={styles.glass}>
+                <div  style={{backgroundColor: 'rgba(0, 0, 0, 0.6)', borderRadius: 6}}>
+                    <div  style={{padding: 23}}>
+            <Stepper activeStep={activeStep} orientation="vertical" style={{backgroundColor: 'rgba(0, 0, 0, 0)', borderRadius: 10}}>
+
+                {steps.map((label, index) => (
+                    <Step key={label} >
+                        <StepLabel>{label}</StepLabel>
+                        <StepContent >
+                            <Typography>{getStepContent(index)}</Typography>
+                            <div className={classes.actionsContainer}>
+                                <div>
+                                    <Button
+                                        disabled={activeStep === 0}
+                                        onClick={handleBack}
+                                        style={{color: 'white'}}
+                                    >
+                                        Back
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={handleNext}
+                                    >
+                                        {activeStep === steps.length - 1 ? 'I`m ready' : 'Next'}
+                                    </Button>
+                                </div>
+                            </div>
+                        </StepContent>
+                    </Step>
+                ))}
+
+            </Stepper>
+            {activeStep === steps.length && (
+                <Paper square elevation={0} className={styles.glass}>
+                    <Button onClick={handleReset} className={styles.glass} style={{width: '100%'}}>
+                        Подготовить другой файл?
+                    </Button>
+                </Paper>
+            )}
+        </div></div></div></div>
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
