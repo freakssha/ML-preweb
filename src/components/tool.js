@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { FilePond, registerPlugin } from 'react-filepond';
+import {FilePond, registerPlugin} from 'react-filepond';
 import 'filepond/dist/filepond.min.css';
 import Button from "@material-ui/core/Button";
 import FormControl from "@material-ui/core/FormControl";
@@ -16,15 +16,15 @@ import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
 import Paper from "@material-ui/core/Paper";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+
 registerPlugin();
 
 
 export const userData = {user_parameters: null, user_func_name: null, user_arg_name: null}
 
 export const stepTitles = [<Typography style={{color: 'white'}}>Upload the file</Typography>,
-                           <Typography style={{color: 'white'}}>Select the input data parameters</Typography>,
-                           <Typography style={{color: 'white'}}>Name the function and the argument</Typography>]
-
+    <Typography style={{color: 'white'}}>Select the input data parameters</Typography>,
+    <Typography style={{color: 'white'}}>Name the function and the argument</Typography>]
 
 
 export const StepContent1 = () => {
@@ -44,9 +44,9 @@ export const StepContent1 = () => {
                 className='filepond'
                 labelIdle='Drag & Drop your model in .py or <span class="filepond--label-action">Browse</span>'
                 style={{width: '100%'}}
-                fileValidateTypeLabelExpectedTypesMap={{ 'text/python': '.py' }}
+                fileValidateTypeLabelExpectedTypesMap={{'text/python': '.py'}}
                 fileValidateTypeLabelExpectedTypes='.py ONLY!'
-                server={{ url:'./api/uploads', revert:'/revert'}}
+                server={{url: './api/uploads', revert: '/revert'}}
             />
         </div>
     )
@@ -54,14 +54,14 @@ export const StepContent1 = () => {
 
 export const StepContent2 = () => {
     const [exampleValue, setExampleValue] = React.useState([
-        { isMeaning: 1, types: 'integer', values: 'ValueExample or plug' },
-        { isMeaning: 1, types: 'integer', values: 'ValueExample or plug' },
-        { isMeaning: 1, types: 'integer', values: 'ValueExample or plug' },
-        ]);
+        {isMeaning: 1, types: 'integer', values: 'ValueExample or plug'},
+        {isMeaning: 1, types: 'integer', values: 'ValueExample or plug'},
+        {isMeaning: 1, types: 'integer', values: 'ValueExample or plug'},
+    ]);
 
 
     const addInput = () => {
-        setExampleValue([...exampleValue, { isMeaning: 1, types: 'integer', values: 'ValueExample or plug' }])
+        setExampleValue([...exampleValue, {isMeaning: 1, types: 'integer', values: 'ValueExample or plug'}])
     }
 
     const deleteInput = () => {
@@ -75,7 +75,7 @@ export const StepContent2 = () => {
     }
 
     const handleChange = (event, i) => {
-        const { name, value } = event.target
+        const {name, value} = event.target
         const list = [...exampleValue]
         list[i][name] = value
         setExampleValue(list)
@@ -114,8 +114,8 @@ export const StepContent2 = () => {
             </Button>
 
             {exampleValue.map((item, i) =>
-                <div key={i} style={{marginTop: 10, marginBottom:10}}>
-                    <FormControl >
+                <div key={i} style={{marginTop: 10, marginBottom: 10}}>
+                    <FormControl>
                         <BootstrapInput
                             name='values'
                             value={item.values}
@@ -128,7 +128,7 @@ export const StepContent2 = () => {
                             name='types'
                             value={item.types}
                             onChange={event => handleChange(event, i)}
-                            input={<BootstrapInput />}
+                            input={<BootstrapInput/>}
                         >
                             <MenuItem value='integer'>integer</MenuItem>
                             <MenuItem value='string'>string</MenuItem>
@@ -141,7 +141,7 @@ export const StepContent2 = () => {
                             name='isMeaning'
                             value={item.isMeaning}
                             onChange={event => handleChange(event, i)}
-                            input={<BootstrapInput />}
+                            input={<BootstrapInput/>}
                         >
                             <MenuItem value={1}>meaningful</MenuItem>
                             <MenuItem value={0}>not meaningful</MenuItem>
@@ -153,7 +153,6 @@ export const StepContent2 = () => {
         </div>
     )
 }
-
 
 
 export const StepContent3 = () => {
@@ -172,7 +171,7 @@ export const StepContent3 = () => {
     };
 
     return (
-        <div  style={{marginTop: 10, marginBottom: 20}}>
+        <div style={{marginTop: 10, marginBottom: 20}}>
             <FormControl style={{marginRight: 10}}>
                 <BootstrapInput
                     value={funcName}
@@ -188,9 +187,6 @@ export const StepContent3 = () => {
         </div>
     );
 }
-
-
-
 
 
 export const StepContent4 = () => {
@@ -212,10 +208,6 @@ export const StepContent4 = () => {
 }
 
 
-
-
-
-
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
@@ -231,8 +223,6 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(3),
     },
 }));
-
-
 
 
 function getSteps() {
@@ -256,7 +246,7 @@ export const Tool = () => {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
     const steps = getSteps();
-    const [isSubmitting, setSubmitting] = useState(false )
+    const [isSubmitting, setSubmitting] = useState(false)
 
 
     useEffect(() => {
@@ -264,7 +254,7 @@ export const Tool = () => {
             postUserML();
         }
         setSubmitting(false)
-    }, )
+    },)
 
     async function postUserML() {
         console.log(userData)
@@ -278,7 +268,6 @@ export const Tool = () => {
                 console.log(res)
             })
     }
-
 
 
     const handleNext = () => {
@@ -299,65 +288,54 @@ export const Tool = () => {
     };
 
     return (
-        <div style={{width:'100%'}} >
-            <div style={{width:'100%', marginBottom: 11}} className={styles.glass}>
-                <div  style={{backgroundColor: 'rgba(0, 0, 0, 0.6)', borderRadius: 6}}>
-                    <div  style={{padding: 23}}>
-            <Stepper activeStep={activeStep} orientation="vertical" style={{backgroundColor: 'rgba(0, 0, 0, 0)', borderRadius: 10}}>
+        <div style={{width: '100%'}}>
+            <div style={{width: '100%', marginBottom: 11}} className={styles.glass}>
+                <div style={{backgroundColor: 'rgba(0, 0, 0, 0.6)', borderRadius: 6}}>
+                    <div style={{padding: 23}}>
+                        <Stepper activeStep={activeStep} orientation="vertical"
+                                 style={{backgroundColor: 'rgba(0, 0, 0, 0)', borderRadius: 10}}>
 
-                {steps.map((label, index) => (
-                    <Step key={label} >
-                        <StepLabel>{label}</StepLabel>
-                        <StepContent >
-                            <Typography>{getStepContent(index)}</Typography>
-                            <div className={classes.actionsContainer}>
-                                <div>
-                                    <Button
-                                        disabled={activeStep === 0}
-                                        onClick={handleBack}
-                                        style={{color: 'white'}}
-                                    >
-                                        Back
-                                    </Button>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={handleNext}
-                                    >
-                                        {activeStep === steps.length - 1 ? 'I`m ready' : 'Next'}
-                                    </Button>
-                                </div>
-                            </div>
-                        </StepContent>
-                    </Step>
-                ))}
+                            {steps.map((label, index) => (
+                                <Step key={label}>
+                                    <StepLabel>{label}</StepLabel>
+                                    <StepContent>
+                                        <Typography>{getStepContent(index)}</Typography>
+                                        <div className={classes.actionsContainer}>
+                                            <div>
+                                                <Button
+                                                    disabled={activeStep === 0}
+                                                    onClick={handleBack}
+                                                    style={{color: 'white'}}
+                                                >
+                                                    Back
+                                                </Button>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={handleNext}
+                                                >
+                                                    {activeStep === steps.length - 1 ? 'I`m ready' : 'Next'}
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </StepContent>
+                                </Step>
+                            ))}
 
-            </Stepper>
-            {activeStep === steps.length && (
-                <Paper square elevation={0} className={styles.glass}>
-                    <Button onClick={handleReset} className={styles.glass} style={{width: '100%'}}>
-                        Подготовить другой файл?
-                    </Button>
-                </Paper>
-            )}
-        </div></div></div></div>
+                        </Stepper>
+                        {activeStep === steps.length && (
+                            <Paper square elevation={0} className={styles.glass}>
+                                <Button onClick={handleReset} className={styles.glass} style={{width: '100%'}}>
+                                    Подготовить другой файл?
+                                </Button>
+                            </Paper>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
     )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 const BootstrapInput = withStyles((theme) => ({
