@@ -1,7 +1,4 @@
-import os
-from werkzeug.utils import secure_filename
-
-from flask import Flask, jsonify, request, flash, redirect, url_for
+from flask import Flask, request, send_file
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'py'}
@@ -9,18 +6,8 @@ ALLOWED_EXTENSIONS = {'py'}
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-user_files = [
-    {
-        'user_file': 0,
-        'user_parameters': [0, 0],
-        'user_func_name': 0,
-        'user_arg_name': 0,
-    }
-]
-
 
 def edit_user_file(user_parameters, user_func_name, user_arg_name):
-
     # kostyl
     global user_file_before
     line_id = 0
@@ -28,6 +15,17 @@ def edit_user_file(user_parameters, user_func_name, user_arg_name):
     imports = []
 
     edited_file = "edited_ml.py"
+
+    reformatted_user_parameters = ''
+    user_parameters_counter = 0
+
+    for user_parameter in user_parameters:
+        if user_parameter['types'] == 'string':
+            reformatted_user_parameters = reformatted_user_parameters + f'\t{user_arg_name}[{user_parameters_counter}] = "' + "'" + f'" + {user_arg_name}[{user_parameters_counter}] + "' + "'" + '"\n'
+        if user_parameter['isMeaning'] == 0:
+            reformatted_user_parameters = reformatted_user_parameters + f'\t{user_arg_name}.insert({user_parameters_counter}, {user_parameter["values"]})\n'
+
+        user_parameters_counter += 1
 
     # create new file with target lines only
     with open(user_file_before.filename, 'r') as file:
@@ -41,7 +39,6 @@ def edit_user_file(user_parameters, user_func_name, user_arg_name):
         for line in file:
             if 'import' in line.split():
                 imports.append(line)
-                print(imports)
 
     # tab without imports
     with open(edited_file, 'r') as file:
@@ -55,46 +52,28 @@ def edit_user_file(user_parameters, user_func_name, user_arg_name):
 
                 line_id += 1
 
-    # add imports, func and main return
     with open(edited_file, 'r') as file:
         list_of_lines = file.readlines()
 
-        def_to_add = f'def {user_func_name}({user_arg_name}):\n' \
-                     '\twith open(os.path.join("input", "test.csv"), "a") as fp:\n' \
-                     '\t\twr = csv.writer(fp, dialect="excel")\n' \
-                     '\t\twr.writerow(user_data)\n'
-        return_to_add = '\treturn predictions[len(predictions)-1:]'
-
+        # add imports
         for imprt in imports:
             imports_id += 1
             list_of_lines[imports_id] = '\n' + imprt
 
-        list_of_lines[imports_id + 1] = '\n' + def_to_add
-        print(line_id)
-        list_of_lines[line_id - 1] = '\n' + return_to_add
+        # add func
+        list_of_lines[imports_id + 1] = f'\ndef {user_func_name}({user_arg_name}):\n' \
+                                        f'{reformatted_user_parameters}\n' \
+                                        '\twith open(os.path.join("input", "test.csv"), "a") as fp:\n' \
+                                        '\t\twr = csv.writer(fp, dialect="excel")\n' \
+                                        '\t\twr.writerow(user_data)\n'
 
+        list_of_lines[line_id - 1] = '\n\treturn predictions[len(predictions)-1:]'
+
+        # finnish write
         with open(edited_file, "w") as new_file:
             new_file.writelines(list_of_lines)
 
-
-
-
-
-
-
-
-                #if counter == 1:
-                    #
-
-
-
-
-
-
-
-            # ["Survived"]
-
-                # /t all after import, add func, return in the end, test edit if error delete
+    return send_file('../edited_ml.py', 'text/python')
 
 
 @app.route('/api/uploads', methods=['GET', 'POST'])
@@ -108,9 +87,7 @@ def upload_file():
 
         user_file_before = user_file
 
-        edit_user_file(0, 'is_user_alive', 'user_data')
-
-        return user_file.filename
+        return 'File Uploaded'
 
 
 @app.route('/api/parameters', methods=['GET', 'POST'])

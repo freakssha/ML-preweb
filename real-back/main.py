@@ -1,7 +1,4 @@
-
-
 def edit_user_file(user_parameters, user_func_name, user_arg_name):
-
     # kostyl
     global user_file_before
     line_id = 0
@@ -45,7 +42,6 @@ def edit_user_file(user_parameters, user_func_name, user_arg_name):
                      '\t\twr = csv.writer(fp, dialect="excel")\n' \
                      '\t\twr.writerow(user_data)\n'
 
-
         for imprt in imports:
             imports_id += 1
             list_of_lines[imports_id] = '\n' + imprt
@@ -54,6 +50,7 @@ def edit_user_file(user_parameters, user_func_name, user_arg_name):
 
         with open(edited_file, "w") as new_file:
             new_file.writelines(list_of_lines)
+
 
 edit_user_file([
     {'isMeaning': 1, 'types': 'integer', 'values': 'ValueExample or plug'},

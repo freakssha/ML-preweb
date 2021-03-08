@@ -22,6 +22,8 @@ registerPlugin();
 
 export const userData = {user_parameters: null, user_func_name: null, user_arg_name: null}
 
+let editedFile = 0
+
 export const stepTitles = [<Typography style={{color: 'white'}}>Upload the file</Typography>,
     <Typography style={{color: 'white'}}>Select the input data parameters</Typography>,
     <Typography style={{color: 'white'}}>Name the function and the argument</Typography>]
@@ -265,7 +267,7 @@ export const Tool = () => {
             data: userData
         })
             .then(res => {
-                console.log(res)
+                editedFile = res.data
             })
     }
 
@@ -325,8 +327,16 @@ export const Tool = () => {
                         </Stepper>
                         {activeStep === steps.length && (
                             <Paper square elevation={0} className={styles.glass}>
+                                Call your function name with user data as an argument like this:
+                                is_user_alive(user_data) - Wuale!
+                                <Button style={{color: 'blue', marginLeft: 20}} onClick={() => {
+                                    navigator.clipboard.writeText(editedFile)
+                                }}>
+                                    Click COPY&PAST your model
+                                </Button>
+
                                 <Button onClick={handleReset} className={styles.glass} style={{width: '100%'}}>
-                                    Подготовить другой файл?
+                                    Prepare another one?
                                 </Button>
                             </Paper>
                         )}
